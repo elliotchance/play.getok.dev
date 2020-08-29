@@ -1,6 +1,6 @@
-# getok.dev
+# play.getok.dev
 
-This repository represents the [getok.dev](https://getok.dev) domain.
+This repository represents the [play.getok.dev](https://play.getok.dev) domain.
 
 ## Deploy
 
@@ -8,7 +8,7 @@ This repository represents the [getok.dev](https://getok.dev) domain.
 make deploy
 ```
 
-## play.getok.dev
+## Testing
 
 ```
 sls invoke -f run --data '{"body":"func main() { print(\"hello\") }"}'
