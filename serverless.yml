@@ -1,9 +1,19 @@
-service: getok
+service: play-getok
 frameworkVersion: '>=1.28.0 <2.0.0'
 
 provider:
   name: aws
   runtime: go1.x
+
+plugins:
+  - serverless-domain-manager
+
+custom:
+  customDomain:
+    domainName: play.getok.dev
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
 
 package:
   exclude:
@@ -12,9 +22,13 @@ package:
     - ./bin/**
 
 functions:
-  run:
-    handler: bin/run
+  app:
+    handler: bin/app
+    memorySize: 128
     events:
       - http:
-          path: run
+          path: /
+          method: get
+      - http:
+          path: /run
           method: post

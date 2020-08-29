@@ -1,10 +1,11 @@
 .PHONY: build clean deploy
 
 build:
-	env GOOS=linux go build -ldflags="-s -w" -o bin/run run/main.go
+	cd app && env GOOS=linux packr2 build -ldflags="-s -w" -o ../bin/app
 
 clean:
 	rm -rf ./bin
 
 deploy: clean build
+	sls create_domain
 	sls deploy --verbose
