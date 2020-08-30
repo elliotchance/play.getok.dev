@@ -2,6 +2,8 @@
 
 This repository represents the [play.getok.dev](https://play.getok.dev) domain.
 
+**[Visit the OK programming language repository for more.](https://github.com/elliotchance/ok)**
+
 ## Deploy
 
 ```bash
