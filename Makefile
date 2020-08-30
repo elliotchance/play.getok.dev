@@ -6,6 +6,9 @@ build:
 clean:
 	rm -rf ./bin
 
-deploy: clean build
+update:
+	go get -u github.com/elliotchance/ok@$(shell curl -s https://api.github.com/repos/elliotchance/ok/releases/latest | jq -r .tag_name)
+
+deploy: clean update build
 	sls create_domain
 	sls deploy --verbose
