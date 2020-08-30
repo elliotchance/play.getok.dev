@@ -54,9 +54,171 @@
 <script src="https://pagecdn.io/lib/ace/1.4.12/theme-monokai.min.js" crossorigin="anonymous"></script>
 <script src="https://pagecdn.io/lib/ace/1.4.12/mode-golang.min.js" crossorigin="anonymous"></script>
 <script>
+    define('ace/mode/ok', function (require, exports, module) {
+        "use strict";
+        var oop = require("../lib/oop");
+        var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+        var TextMode = require("./text").Mode;
+        var CstyleBehaviour = require("./behaviour/cstyle").CstyleBehaviour;
+        var CStyleFoldMode = require("./folding/cstyle").FoldMode;
+        var OKHighlightRules = function () {
+            let startRules = [
+                {
+                    comment: "Bool literals",
+                    token: "constant.language.ok",
+                    regex: "\\b(true|false)\\b",
+                },
+                {
+                    comment: "Line comments",
+                    token: "comment.line.double-slash.ok",
+                    regex: "//",
+                    next: "comment",
+                },
+                {
+                    comment: "Character literals",
+                    token: "string.quoted.single.ok",
+                    regex: "'",
+                    next: "char",
+                },
+                {
+                    comment: "Data literals",
+                    token: "string.quoted.triple.ok",
+                    regex: "`",
+                    next: "data",
+                },
+                {
+                    comment: "Number literals",
+                    token: "constant.numeric.ok",
+                    regex: "\\b-?\\d+(.\\d+)?\\b",
+                },
+                {
+                    comment: "String literals",
+                    token: "string.quoted.double.ok",
+                    regex: "\"",
+                    next: "string",
+                },
+                {
+                    comment: "Logical operators",
+                    token: "keyword.control.ok",
+                    regex: "\\b(and|or|not)\\b",
+                },
+                {
+                    comment: "Types",
+                    token: "support.type.ok",
+                    regex: "\\b(any|bool|char|data|number|string)\\b",
+                },
+                {
+                    comment: "Keywords",
+                    token: "keyword.control.ok",
+                    regex: "\\b(assert|break|case|continue|else|for|func|if|import|in|return|switch|test|try|raise|on|finally)\\b",
+                },
+            ];
+            this.$rules = {
+                "char": [
+                    {
+                        token: "string.quoted.single.ok",
+                        regex: "'",
+                        next: "start",
+                    },
+                    {
+                        token: "constant.character.escape.ok",
+                        regex: "\\\\.",
+                    },
+                    {
+                        defaultToken: "string.quoted.single.ok",
+                    },
+                ],
+                "comment": [
+                    {
+                        token: "comment.line.double-slash.ok",
+                        regex: "$",
+                        next: "start",
+                    },
+                    {
+                        token: "constant.character.escape.ok",
+                        regex: "\\\\.",
+                    },
+                    {
+                        token: "keyword.todo",
+                        regex: "TODO",
+                        next: "todo",
+                    },
+                    {
+                        defaultToken: "comment.line.double-slash.ok",
+                    },
+                ],
+                "data": [
+                    {
+                        token: "string.quoted.triple.ok",
+                        regex: "`",
+                        next: "start",
+                    },
+                    {
+                        defaultToken: "string.quoted.triple.ok",
+                    },
+                ],
+                "interpolate": [
+                    {
+                        token: "meta.embedded.inline.ok",
+                        regex: "}",
+                        next: "string",
+                    },
+                    {
+                        defaultToken: "start",
+                    },
+                ].concat(startRules),
+                "string": [
+                    {
+                        token: "string.quoted.double.ok",
+                        regex: "\"",
+                        next: "start",
+                    },
+                    {
+                        token: "constant.character.escape.ok",
+                        regex: "\\\\.",
+                    },
+                    {
+                        token: "meta.embedded.inline.ok",
+                        regex: "{",
+                        next: "interpolate",
+                    },
+                    {
+                        defaultToken: "string.quoted.double.ok",
+                    },
+                ],
+                "todo": [
+                    {
+                        token: "keyword.todo",
+                        regex: "$",
+                        next: "start",
+                    },
+                    {
+                        defaultToken: "keyword.todo",
+                    },
+                ],
+                "start": startRules,
+            };
+            this.normalizeRules();
+        };
+        oop.inherits(OKHighlightRules, TextHighlightRules);
+
+        var Mode = function () {
+            this.HighlightRules = OKHighlightRules;
+            this.$behaviour = new CstyleBehaviour();
+            this.foldingRules = new CStyleFoldMode();
+        };
+        oop.inherits(Mode, TextMode);
+
+        (function () {
+            this.$id = "ace/mode/ok";
+        }).call(Mode.prototype);
+
+        exports.Mode = Mode;
+    });
+
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/golang");
+    editor.session.setMode("ace/mode/ok");
 
     var examples = {
         'Hello World': `func main() {
